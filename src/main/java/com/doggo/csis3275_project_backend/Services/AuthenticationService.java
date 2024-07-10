@@ -24,36 +24,28 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private Customer customer;
-    private String responseMessage = "";
-    private boolean responseResult;
-
-    private HashMap<String, Object> responseData;
 
     public AuthenticationService(ICustomerRepository customerRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService){
         this.customerRepository = customerRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
-
-        this.responseData = new HashMap();
-        this.responseResult = false;
     }
 
 //    public GenericResponse register(Customer customer, HttpServletResponse response) throws JsonProcessingException, JSONException {
     public GenericResponse register(Customer customer, HttpServletResponse response) {
-//        JSONObject responseJson = new JSONObject();
-//
-//
-//
+        String responseMessage = "";
+        boolean responseResult = false;
+        HashMap<String, Object> responseData = new HashMap<>();
+
         try{
             //validate required fields
             if(customer.getUsername() == null || customer.getPassword().equals("")){
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                responseMessage = "Username not found";
+                responseMessage = "The submitted data is incomplete. Please complete your data before register";
             }
             //check if user exist
             else if(customerRepository.getCustomerByUsername(customer.getUsername()) != null){
-                responseResult = false;
                 responseMessage = "Please logged in to your account";
             }
             else{
@@ -61,8 +53,15 @@ public class AuthenticationService {
                         customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPhone());
 
                 newCustomer = customerRepository.save(newCustomer);
-                newCustomer.setId(newCustomer.getId());
-                responseData.put("customer", newCustomer);
+//                newCustomer.setId(newCustomer.getId());
+//                responseData.put("customer", newCustomer);
+
+                responseData.put("id", newCustomer.getId());
+                responseData.put("username", newCustomer.getUsername());
+                responseData.put("firstName", newCustomer.getFirstName());
+                responseData.put("lastName", newCustomer.getLastName());
+                responseData.put("email", newCustomer.getEmail());
+                responseData.put("phone", newCustomer.getPhone());
 
 //            JSONObject customerJSON = new JSONObject(mapper.writeValueAsString(newCustomer));
 //            customerJSON.put("id", newCustomer.getId().toHexString());
@@ -84,7 +83,12 @@ public class AuthenticationService {
     }
 
     public GenericResponse login(String username, String password, HttpServletResponse response) {
-        // on the start of the function in this class, always use try catch
+        // on the start of the function in this class, always define these 3 variables (just copy paste)
+        // 1. responseMessage = "";
+        // 2. responseResult = false;
+        // 3. responseData = new HashMap<>();
+        //
+        // then, use try catch
         // this is the template
         //
         // try {
@@ -93,6 +97,10 @@ public class AuthenticationService {
         // catch(Exception e){
         //            handleError(e);
         //        }
+
+        String responseMessage = "";
+        boolean responseResult = false;
+        HashMap<String, Object> responseData = new HashMap<>();
 
         try{
             // since this is a login function, the logic here is to do user authentication
