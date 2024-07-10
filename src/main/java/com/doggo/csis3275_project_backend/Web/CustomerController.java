@@ -1,6 +1,7 @@
 package com.doggo.csis3275_project_backend.Web;
 
 import com.doggo.csis3275_project_backend.Entities.Customer;
+import com.doggo.csis3275_project_backend.Entities.GenericResponse;
 import com.doggo.csis3275_project_backend.Services.AuthenticationService;
 import com.doggo.csis3275_project_backend.Services.CustomerService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,8 +26,7 @@ public class CustomerController {
     }
 
     @GetMapping("/me")
-    public String getAuthenticatedUserData(HttpServletResponse response){
-
+    public GenericResponse getAuthenticatedUserData(HttpServletResponse response){
         return customerService.getUserData(response);
     }
 
