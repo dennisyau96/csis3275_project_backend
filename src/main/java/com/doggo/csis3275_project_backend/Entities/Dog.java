@@ -24,7 +24,6 @@ public class Dog {
     private String location;
     private boolean desexed;
     private boolean vaccinated;
-    private double average_rating;
+//    private double average_rating;
     private String profile_description;
-
 }

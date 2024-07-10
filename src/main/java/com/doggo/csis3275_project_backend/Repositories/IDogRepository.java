@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface IDogRepository extends MongoRepository<Dog, UUID> {
+public interface IDogRepository extends MongoRepository<Dog, String> {
     Dog getDogByName(String name);
 }

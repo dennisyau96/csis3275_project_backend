@@ -3,6 +3,7 @@ package com.doggo.csis3275_project_backend.Services;
 import com.doggo.csis3275_project_backend.Entities.Dog;
 import com.doggo.csis3275_project_backend.Repositories.ICustomerRepository;
 import com.doggo.csis3275_project_backend.Repositories.IDogRepository;
+import com.doggo.csis3275_project_backend.exceptions.ErrorHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
@@ -18,26 +19,34 @@ public class DogService {
     private String message = "";
     //private int dog_id;
 
-    @Autowired
+
     public DogService(IDogRepository dogRepository){
         this.dogRepository = dogRepository;
     }
-    public DogService(){}
+//    public DogService(){}
 
     public String getDog(String name, HttpServletResponse response){
         JSONObject responseJson = new JSONObject();
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.findAndRegisterModules();
-        dog = dogRepository.getDogByName(name);
-        if(dog != null){
-            message = dog.getName();
-            responseJson.put("success", true);
-        }
-        else{
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            message = "Wrong username or password";
 
+        try{
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.findAndRegisterModules();
+            dog = dogRepository.getDogByName(name);
+            if(dog != null){
+                message = dog.getName();
+                responseJson.put("success", true);
+            }
+            else{
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                message = "Wrong username or password";
+
+            }
         }
+        catch (Exception e){
+            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
+        }
+
 
         responseJson.put("message", message);
 
