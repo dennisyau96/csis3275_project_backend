@@ -3,10 +3,13 @@ package com.doggo.csis3275_project_backend.Web;
 
 import com.doggo.csis3275_project_backend.Entities.Dog;
 
+import com.doggo.csis3275_project_backend.Entities.GenericResponse;
 import com.doggo.csis3275_project_backend.Services.DogService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletResponse;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
@@ -19,9 +22,16 @@ public class DogController {
     public DogController(DogService dogService){
         this.dogService = dogService;
     }
-    @PostMapping(path = "/showDog")
-    public String showDog(@RequestBody Dog dog, HttpServletResponse response) throws JsonProcessingException{
-        return dogService.getDog(dog.getName(),response);
+
+    @GetMapping("/getDogs")
+    public GenericResponse<Page<Dog>> getDogs(@RequestParam(defaultValue = "0") int pageNo, @RequestParam(defaultValue = "10") int pageSize) {
+        return dogService.getDogs(pageNo, pageSize);
+    }
+
+    @GetMapping(path = "/getDogDetail/{id}")
+    public GenericResponse showDog(@PathVariable String id, HttpServletResponse response) throws JsonProcessingException{
+        ObjectId oid = new ObjectId(id);
+        return dogService.getDog(id, response);
     }
 
 }

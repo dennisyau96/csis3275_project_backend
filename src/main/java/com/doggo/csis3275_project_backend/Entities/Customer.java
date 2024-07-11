@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -18,6 +20,7 @@ public class Customer implements UserDetails {
 //    private ObjectId id;
     // For other entities, we only have to define the attributes, ignore the functions down there
     // the attribute represents the table's columns
+    @Field(targetType = FieldType.OBJECT_ID)
     private String id;
     private String username;
     private String password;

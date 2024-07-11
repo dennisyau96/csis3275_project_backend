@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 @Data
 @AllArgsConstructor
 @Document(collection = "dogs")
 public class Dog {
-    private ObjectId _id;
+    @Field(targetType = FieldType.OBJECT_ID)
+    private String _id;
     private int dog_id;
     private int owner_id;
     private int service_id;
@@ -24,6 +27,6 @@ public class Dog {
     private String location;
     private boolean desexed;
     private boolean vaccinated;
-//    private double average_rating;
+    private Double average_rating;
     private String profile_description;
 }
