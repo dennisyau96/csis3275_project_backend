@@ -5,8 +5,10 @@ import com.doggo.csis3275_project_backend.Entities.GenericResponse;
 import com.doggo.csis3275_project_backend.Repositories.ICustomerRepository;
 import com.doggo.csis3275_project_backend.exceptions.ErrorHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,11 +20,18 @@ public class CustomerService {
     private ICustomerRepository customerRepository;
     private Customer customer;
 
-    public CustomerService(ICustomerRepository customerRepository) {
+    private final JwtService jwtService;
+
+    public CustomerService(ICustomerRepository customerRepository, JwtService jwtService) {
         this.customerRepository = customerRepository;
+        this.jwtService = jwtService;
     }
 
-    public GenericResponse getUserData(HttpServletResponse response){
+    public GenericResponse getUserData(String rawToken, HttpServletResponse response){
+//        String token = jwtService.getToken(rawToken);
+//        String id = jwtService.extractClaim(token, Claims::getId);
+//        System.out.println(id);
+
         String responseMessage = "";
         boolean responseResult = false;
         HashMap<String, Object> responseData = new HashMap<>();
