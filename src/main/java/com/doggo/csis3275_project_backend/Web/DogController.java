@@ -6,6 +6,7 @@ import com.doggo.csis3275_project_backend.Entities.Dog;
 import com.doggo.csis3275_project_backend.Entities.GenericResponse;
 import com.doggo.csis3275_project_backend.Services.DogService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,18 @@ public class DogController {
 
     @GetMapping(path = "/getDogDetail/{id}")
     public GenericResponse showDog(@PathVariable String id, HttpServletResponse response) throws JsonProcessingException{
-        ObjectId oid = new ObjectId(id);
         return dogService.getDog(id, response);
     }
+
+    @PostMapping(path="/addDog")
+    public GenericResponse addDog(@RequestBody Dog dog, HttpServletResponse response) throws JsonProcessingException{
+        return dogService.addDog(dog, response);
+    }
+    @PostMapping(path="/deleteDog")
+    public GenericResponse deleteDog(@RequestBody Dog dog, HttpServletResponse response) throws JsonProcessingException{
+        return dogService.deleteDog(dog.get_id(), response);
+    }
+
+
 
 }

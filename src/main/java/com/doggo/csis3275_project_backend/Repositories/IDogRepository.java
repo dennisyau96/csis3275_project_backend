@@ -10,5 +10,5 @@ import java.util.UUID;
 
 @Repository
 public interface IDogRepository extends MongoRepository<Dog, String> {
-    Dog getDogByName(String name);
+    Dog getDogBy_id(String _id);
 }

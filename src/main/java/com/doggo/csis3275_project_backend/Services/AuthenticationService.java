@@ -6,7 +6,9 @@ import com.doggo.csis3275_project_backend.Repositories.ICustomerRepository;
 import com.doggo.csis3275_project_backend.exceptions.ErrorHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -82,7 +84,7 @@ public class AuthenticationService {
         return GenericResponse.makeResponse(responseMessage, responseResult, responseData);
     }
 
-    public GenericResponse login(String username, String password, HttpServletResponse response) {
+    public GenericResponse login(String username, String password, HttpServletResponse response, HttpServletRequest request) {
         // on the start of the function in this class, always define these 3 variables (just copy paste)
         // 1. responseMessage = "";
         // 2. responseResult = false;
@@ -117,6 +119,9 @@ public class AuthenticationService {
             if(customer != null){
                 // logic for session token. You don't have to worry about this. You won't deal with this in other APIs
                 String jwtToken = jwtService.generateToken(customer);
+
+                //HttpSession session = request.getSession();
+                //session.setAttribute("userId", customer.getId());
 
                 // this is what you have to set to indicate if the backend code successfully do the operation
                 // if the backend code successfully do the operation, "responseMessage" value always "success"

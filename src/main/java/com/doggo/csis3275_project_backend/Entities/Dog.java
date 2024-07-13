@@ -13,20 +13,33 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 public class Dog {
     @Field(targetType = FieldType.OBJECT_ID)
     private String _id;
-    private int dog_id;
-    private int owner_id;
-    private int service_id;
+    private Integer owner_id;
+    private Integer service_id;
     private String name;
     private String breed;
-    private int age;
+    private Integer age;
     private String sex;
     private String available_timeslot;
     private String additional_message;
     private String  profile_pic;
-    private double rental_price_per_hour;
+    private Double rental_price_per_hour;
     private String location;
-    private boolean desexed;
-    private boolean vaccinated;
+    private Boolean desexed;
+    private Boolean vaccinated;
     private Double average_rating;
     private String profile_description;
+
+    /*public Dog(String name, Integer serviceId, String breed, Integer age, String sex, String profilePic, Double rentalPricePerHour, String location, Boolean desexed, Boolean vaccinated, String profileDescription) {
+        this.name = name;
+        this.service_id = serviceId;
+        this.breed = breed;
+        this.age = age;
+        this.sex = sex;
+        this.profile_pic = profilePic;
+        this.rental_price_per_hour = rentalPricePerHour;
+        this.location = location;
+        this.desexed = desexed;
+        this.vaccinated = vaccinated;
+        this.profile_description = profileDescription;
+    }*/
 }

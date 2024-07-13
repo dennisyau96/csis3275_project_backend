@@ -6,6 +6,7 @@ import com.doggo.csis3275_project_backend.Entities.GenericResponse;
 import com.doggo.csis3275_project_backend.Services.AuthenticationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -29,9 +30,9 @@ public class AuthenticationController {
 
     @PostMapping(path = "/login")
     //public String login(@RequestBody Customer customer, HttpServletResponse response) throws JsonProcessingException{
-    public GenericResponse login(@RequestBody Customer customer, HttpServletResponse response) throws JsonProcessingException{
+    public GenericResponse login(@RequestBody Customer customer, HttpServletResponse response, HttpServletRequest request) throws JsonProcessingException{
         // call to function in "xxxxService"
-        return authenticationService.login(customer.getUsername(), customer.getPassword(), response);
+        return authenticationService.login(customer.getUsername(), customer.getPassword(), response,request);
     }
 
 
