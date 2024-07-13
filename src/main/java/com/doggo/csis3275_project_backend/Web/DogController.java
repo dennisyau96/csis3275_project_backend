@@ -46,8 +46,4 @@ public class DogController {
     public GenericResponse updateDog(@RequestHeader (name="Authorization") String rawToken,@RequestBody Dog dog, HttpServletResponse response)throws JsonProcessingException{
         return dogService.updateDog(rawToken, dog.get_id(), dog, response);
     }
-
-
-
-
 }

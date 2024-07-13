@@ -86,33 +86,6 @@ public class DogService {
         }
 
         return GenericResponse.makeResponse(responseMessage, responseResult, responseData);
-
-//        JSONObject responseJson = new JSONObject();
-//
-//        try{
-//
-//            ObjectMapper mapper = new ObjectMapper();
-//            mapper.findAndRegisterModules();
-//            dog = dogRepository.getDogByName(name);
-//
-//            if(dog != null){
-//                message = dog.getName();
-//                responseJson.put("success", true);
-//            }
-//            else{
-//                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-//                message = "Wrong username or password";
-//
-//            }
-//        }
-//        catch (Exception e){
-//            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
-//        }
-//
-//
-//        responseJson.put("message", message);
-//
-//        return responseJson.toString();
     }
 
     public GenericResponse addDog(String rawToken, Dog dog, HttpServletResponse response) throws JsonProcessingException, JSONException {
@@ -309,5 +282,19 @@ public class DogService {
         return GenericResponse.makeResponse(responseMessage, responseResult, responseData);
     }
 
+    public GenericResponse addTimeSlot(HttpServletResponse response){
+        String responseMessage = "success";
+        boolean responseResult = false;
+        HashMap<String, Object> responseData = new HashMap<>();
 
+        try {
+
+        }
+        catch (Exception e){
+            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
+            responseMessage = "Error. Contact administrator";
+        }
+
+        return GenericResponse.makeResponse(responseMessage, responseResult, responseData);
+    }
 }
