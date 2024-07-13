@@ -35,13 +35,18 @@ public class DogController {
     }
 
     @PostMapping(path="/addDog")
-    public GenericResponse addDog(@RequestBody Dog dog, HttpServletResponse response) throws JsonProcessingException{
-        return dogService.addDog(dog, response);
+    public GenericResponse addDog(@RequestHeader (name="Authorization") String rawToken,@RequestBody Dog dog, HttpServletResponse response) throws JsonProcessingException{
+        return dogService.addDog(rawToken, dog, response);
     }
     @PostMapping(path="/deleteDog")
-    public GenericResponse deleteDog(@RequestBody Dog dog, HttpServletResponse response) throws JsonProcessingException{
-        return dogService.deleteDog(dog.get_id(), response);
+    public GenericResponse deleteDog(@RequestHeader (name="Authorization") String rawToken,@RequestBody Dog dog, HttpServletResponse response) throws JsonProcessingException{
+        return dogService.deleteDog(rawToken,dog.get_id(), response);
     }
+    @PostMapping(path="/updateDog")
+    public GenericResponse updateDog(@RequestHeader (name="Authorization") String rawToken,@RequestBody Dog dog, HttpServletResponse response)throws JsonProcessingException{
+        return dogService.updateDog(rawToken, dog.get_id(), dog, response);
+    }
+
 
 
 
