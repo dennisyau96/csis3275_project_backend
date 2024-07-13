@@ -4,13 +4,8 @@ import com.doggo.csis3275_project_backend.Entities.Customer;
 import com.doggo.csis3275_project_backend.Entities.GenericResponse;
 import com.doggo.csis3275_project_backend.Repositories.ICustomerRepository;
 import com.doggo.csis3275_project_backend.exceptions.ErrorHelper;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -112,13 +107,15 @@ public class AuthenticationService {
 
             // query data from DB by calling the "repository"
             customer = customerRepository.getCustomerByUsername(username);
+//            Map<String, Object> extraClaims = new HashMap<>();
+//            extraClaims.put("id", customer.getId());
 
             // logic to check whether user logged in successfully
             // if the result of the query is null, meaning no data returned, then the user is not found
             // otherwise, we can found the user in DB, which means the login is success
             if(customer != null){
                 // logic for session token. You don't have to worry about this. You won't deal with this in other APIs
-                String jwtToken = jwtService.generateToken(customer);
+                String jwtToken = jwtService.generateToken(customer, customer.getId());
 
                 //HttpSession session = request.getSession();
                 //session.setAttribute("userId", customer.getId());

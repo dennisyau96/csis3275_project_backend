@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Document(collection = "user")
 public class Customer implements UserDetails {
-//    private ObjectId id;
+    //    private ObjectId id;
     // For other entities, we only have to define the attributes, ignore the functions down there
     // the attribute represents the table's columns
     @Field(targetType = FieldType.OBJECT_ID)
