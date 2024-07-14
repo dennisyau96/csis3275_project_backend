@@ -30,15 +30,17 @@ public class Customer implements UserDetails {
     private String phone;
     private String profilePic;
     private String profile;
+    private String role;
 
     public Customer(){}
-    public Customer(String username, String password, String firstName, String lastName, String email, String phone) {
+    public Customer(String username, String password, String firstName, String lastName, String email, String phone, String role) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
+        this.role = role;
     }
 
     @Override

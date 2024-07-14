@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AuthenticationService {
@@ -21,6 +22,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private Customer customer;
+    private enum Role {OWNER, RENTER}
 
     public AuthenticationService(ICustomerRepository customerRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtService jwtService){
         this.customerRepository = customerRepository;
@@ -29,17 +31,23 @@ public class AuthenticationService {
         this.jwtService = jwtService;
     }
 
-//    public GenericResponse register(Customer customer, HttpServletResponse response) throws JsonProcessingException, JSONException {
     public GenericResponse register(Customer customer, HttpServletResponse response) {
         String responseMessage = "";
         boolean responseResult = false;
         HashMap<String, Object> responseData = new HashMap<>();
 
         try{
+            System.out.println(Role.OWNER.toString());
+            System.out.println(Role.RENTER.toString());
+
             //validate required fields
-            if(customer.getUsername() == null || customer.getPassword().equals("")){
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            if(customer.getUsername() == null || customer.getPassword().equals("") || customer.getRole().equals("")){
+//                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 responseMessage = "The submitted data is incomplete. Please complete your data before register";
+            }
+            else if(!customer.getRole().equalsIgnoreCase(Role.OWNER.toString()) &&
+                    !customer.getRole().equalsIgnoreCase(Role.RENTER.toString())){
+                responseMessage = "Please choose role as dog owner or dog renter";
             }
             //check if user exist
             else if(customerRepository.getCustomerByUsername(customer.getUsername()) != null){
@@ -47,7 +55,7 @@ public class AuthenticationService {
             }
             else{
                 Customer newCustomer = new Customer(customer.getUsername(), passwordEncoder.encode(customer.getPassword()),
-                        customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPhone());
+                        customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPhone(), customer.getRole().toUpperCase());
 
                 newCustomer = customerRepository.save(newCustomer);
 //                newCustomer.setId(newCustomer.getId());
@@ -59,6 +67,7 @@ public class AuthenticationService {
                 responseData.put("lastName", newCustomer.getLastName());
                 responseData.put("email", newCustomer.getEmail());
                 responseData.put("phone", newCustomer.getPhone());
+                responseData.put("role", newCustomer.getRole());
 
 //            JSONObject customerJSON = new JSONObject(mapper.writeValueAsString(newCustomer));
 //            customerJSON.put("id", newCustomer.getId().toHexString());
@@ -107,15 +116,15 @@ public class AuthenticationService {
 
             // query data from DB by calling the "repository"
             customer = customerRepository.getCustomerByUsername(username);
-//            Map<String, Object> extraClaims = new HashMap<>();
-//            extraClaims.put("id", customer.getId());
+            Map<String, Object> extraClaims = new HashMap<>();
+            extraClaims.put("role", customer.getRole());
 
             // logic to check whether user logged in successfully
             // if the result of the query is null, meaning no data returned, then the user is not found
             // otherwise, we can found the user in DB, which means the login is success
             if(customer != null){
                 // logic for session token. You don't have to worry about this. You won't deal with this in other APIs
-                String jwtToken = jwtService.generateToken(customer, customer.getId());
+                String jwtToken = jwtService.generateToken(extraClaims, customer, customer.getId());
 
                 //HttpSession session = request.getSession();
                 //session.setAttribute("userId", customer.getId());

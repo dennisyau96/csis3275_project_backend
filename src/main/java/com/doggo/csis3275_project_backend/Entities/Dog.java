@@ -13,13 +13,13 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 public class Dog {
     @Field(targetType = FieldType.OBJECT_ID)
     private String _id;
+    @Field(targetType = FieldType.OBJECT_ID)
     private String owner_id;
     private Integer service_id;
     private String name;
     private String breed;
     private Integer age;
     private String sex;
-    private String available_timeslot;
     private String additional_message;
     private String  profile_pic;
     private Double rental_price_per_hour;
