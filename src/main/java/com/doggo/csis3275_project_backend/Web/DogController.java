@@ -4,6 +4,7 @@ package com.doggo.csis3275_project_backend.Web;
 import com.doggo.csis3275_project_backend.Entities.Dog;
 
 import com.doggo.csis3275_project_backend.Entities.GenericResponse;
+import com.doggo.csis3275_project_backend.Entities.Timeslot;
 import com.doggo.csis3275_project_backend.Services.DogService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +13,9 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -25,8 +29,8 @@ public class DogController {
     }
 
     @GetMapping("/getDogs")
-    public GenericResponse<Page<Dog>> getDogs(@RequestParam(defaultValue = "0") int pageNo, @RequestParam(defaultValue = "10") int pageSize) {
-        return dogService.getDogs(pageNo, pageSize);
+    public GenericResponse<Page<Dog>> getDogs(@RequestParam(defaultValue = "0") int page_no, @RequestParam(defaultValue = "10") int page_size) {
+        return dogService.getDogs(page_no, page_size);
     }
 
     @GetMapping(path = "/getDogDetail/{id}")
@@ -45,5 +49,13 @@ public class DogController {
     @PostMapping(path="/updateDog")
     public GenericResponse updateDog(@RequestHeader (name="Authorization") String rawToken,@RequestBody Dog dog, HttpServletResponse response)throws JsonProcessingException{
         return dogService.updateDog(rawToken, dog.get_id(), dog, response);
+    }
+    @GetMapping(path="/getTimeslot/{dogId}")
+    public GenericResponse getTimeslot(@PathVariable String dogId, HttpServletResponse response)throws JsonProcessingException{
+        return dogService.getTimeslot(dogId, response);
+    }
+    @PostMapping(path="/addTimeslot")
+    public GenericResponse addTimeslot(@RequestHeader (name="Authorization") String rawToken, @RequestBody Map<String, Object> json, HttpServletResponse response)throws JsonProcessingException{
+        return dogService.addTimeslot(rawToken, json, response);
     }
 }

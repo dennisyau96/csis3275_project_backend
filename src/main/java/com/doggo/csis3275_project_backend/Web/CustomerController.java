@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/users")
 public class CustomerController {
-//    @RequestHeader (name="Authorization") String token
-//    System.out.println(JwtHelper.getToken(token));
-
     private Logger logger = LoggerFactory.getLogger(CustomerController.class);
 
     private final CustomerService customerService;
