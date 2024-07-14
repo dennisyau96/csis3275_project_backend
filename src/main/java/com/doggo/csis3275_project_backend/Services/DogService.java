@@ -1,43 +1,42 @@
 package com.doggo.csis3275_project_backend.Services;
 
-import com.doggo.csis3275_project_backend.Entities.Customer;
 import com.doggo.csis3275_project_backend.Entities.Dog;
 import com.doggo.csis3275_project_backend.Entities.GenericResponse;
-import com.doggo.csis3275_project_backend.Repositories.ICustomerRepository;
+import com.doggo.csis3275_project_backend.Entities.Timeslot;
 import com.doggo.csis3275_project_backend.Repositories.IDogRepository;
+import com.doggo.csis3275_project_backend.Repositories.ITimeslotRepository;
 import com.doggo.csis3275_project_backend.exceptions.ErrorHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.bson.types.ObjectId;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.*;
 
 @Service
 public class DogService {
 
 
     private IDogRepository dogRepository;
+    private ITimeslotRepository timeslotRepository;
     private Dog dog;
     private String message = "";
     //private int dog_id;
     private final JwtService jwtService;
 
 
-    public DogService(IDogRepository dogRepository, JwtService jwtService){
+    public DogService(IDogRepository dogRepository, ITimeslotRepository timeslotRepository, JwtService jwtService){
         this.dogRepository = dogRepository;
+        this.timeslotRepository = timeslotRepository;
         this.jwtService = jwtService;
     }
 
@@ -86,33 +85,6 @@ public class DogService {
         }
 
         return GenericResponse.makeResponse(responseMessage, responseResult, responseData);
-
-//        JSONObject responseJson = new JSONObject();
-//
-//        try{
-//
-//            ObjectMapper mapper = new ObjectMapper();
-//            mapper.findAndRegisterModules();
-//            dog = dogRepository.getDogByName(name);
-//
-//            if(dog != null){
-//                message = dog.getName();
-//                responseJson.put("success", true);
-//            }
-//            else{
-//                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-//                message = "Wrong username or password";
-//
-//            }
-//        }
-//        catch (Exception e){
-//            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
-//        }
-//
-//
-//        responseJson.put("message", message);
-//
-//        return responseJson.toString();
     }
 
     public GenericResponse addDog(String rawToken, Dog dog, HttpServletResponse response) throws JsonProcessingException, JSONException {
@@ -158,7 +130,6 @@ public class DogService {
                 responseData.put("breed", newDog.getBreed());
                 responseData.put("age", newDog.getAge());
                 responseData.put("sex", newDog.getSex());
-                responseData.put("available_timeslot", newDog.getAvailable_timeslot());
                 responseData.put("additional_message", newDog.getAdditional_message());
                 responseData.put("profile_pic", newDog.getProfile_pic());
                 responseData.put("rental_price_per_hour", newDog.getRental_price_per_hour());
@@ -279,7 +250,6 @@ public class DogService {
                     responseData.put("breed", dog_update.getBreed());
                     responseData.put("age", dog_update.getAge());
                     responseData.put("sex", dog_update.getSex());
-                    responseData.put("available_timeslot", dog_update.getAvailable_timeslot());
                     responseData.put("additional_message", dog_update.getAdditional_message());
                     responseData.put("profile_pic", dog_update.getProfile_pic());
                     responseData.put("rental_price_per_hour", dog_update.getRental_price_per_hour());
@@ -309,5 +279,128 @@ public class DogService {
         return GenericResponse.makeResponse(responseMessage, responseResult, responseData);
     }
 
+    public GenericResponse getTimeslot(String dogId, HttpServletResponse response){
+        String responseMessage = "success";
+        boolean responseResult = false;
+        HashMap<String, Object> responseData = new HashMap<>();
 
+        try {
+            List<Timeslot> timeslots = timeslotRepository.findAllByDog_id(dogId);
+            responseData.put("timeslots", timeslots);
+
+            if(timeslots.size() > 0){
+                responseResult = true;
+            }
+            else{
+                responseMessage = "No available timeslots";
+            }
+        }
+
+        catch (Exception e){
+            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
+            responseMessage = "Error. Contact administrator";
+        }
+
+        return GenericResponse.makeResponse(responseMessage, responseResult, responseData);
+    }
+
+    public GenericResponse addTimeslot(String rawToken, Map<String, Object> json, HttpServletResponse response){
+        String responseMessage = "success";
+        boolean responseResult = false;
+        HashMap<String, Object> responseData = new HashMap<>();
+
+        try {
+            JSONObject requestJSON = new JSONObject(json);
+            JSONArray timeslots = requestJSON.getJSONArray("timeslots");
+
+            // check if there is timeslot
+            if(timeslots.length() > 0){
+                String dogId = requestJSON.getString("dog_id");
+
+                // check if the dog belongs to the user
+                String token = jwtService.getToken(rawToken);
+                String owner_id = jwtService.extractClaim(token, Claims::getId);
+
+                Dog dog = dogRepository.findBy_idAndOwner_id(dogId, owner_id);
+
+                List<Timeslot> existTimeslots = timeslotRepository.findAllByDog_id(dogId);
+                int duplicateCount = 0;
+
+                if(dog != null){
+                    List<Timeslot> newTimeslots = new ArrayList<>(timeslots.length());
+
+                    for (int i=0; i<timeslots.length(); i++){
+                        boolean duplicate = false;
+
+//                    System.out.println(timeslots.get(i));
+                        JSONObject tmp = timeslots.getJSONObject(i);
+                        LocalDate date = LocalDate.parse(tmp.getString("date"));
+                        LocalTime startTime = LocalTime.parse(tmp.getString("start_time"));
+                        LocalTime endTime = LocalTime.parse(tmp.getString("end_time"));
+
+                        Timeslot timeslot = new Timeslot(null, dogId, date, startTime, endTime, false);
+
+                        // check for duplicate timeslot
+                        for (Timeslot eTimeslot : existTimeslots){
+                            // if same date, check the time
+                            if(timeslot.getDate().isEqual(eTimeslot.getDate())){
+                                // 2 conditions considered as duplicate
+                                // if the new start time between the existing timeslot AND
+                                // new end time between the existing timeslot
+                                if((timeslot.getStart_time().isAfter(eTimeslot.getStart_time()) &&
+                                        timeslot.getStart_time().isBefore(eTimeslot.getEnd_time())) ||
+                                        (timeslot.getEnd_time().isAfter(eTimeslot.getStart_time()) &&
+                                                timeslot.getEnd_time().isBefore(eTimeslot.getEnd_time()))){
+                                    duplicate = true;
+                                    duplicateCount++;
+//                                responseMessage = "Successfully save some timeslots. Duplicated or overlapping timeslots are not saved";
+                                    break;
+                                }
+                                // if start and end time exactly the same. it is duplicated
+                                else if(timeslot.getStart_time().compareTo(eTimeslot.getStart_time()) == 0 ||
+                                        timeslot.getEnd_time().compareTo(eTimeslot.getEnd_time()) == 0){
+                                    duplicate = true;
+                                    duplicateCount++;
+//                                responseMessage = "Successfully save some timeslots. Duplicated or overlapping timeslots are not saved";
+                                    break;
+                                }
+                            }
+                        }
+
+                        if(!duplicate){
+                            newTimeslots.add(timeslot);
+                        }
+                    }
+
+                    timeslotRepository.saveAll(newTimeslots);
+                    // there are both duplicate and not duplicate data
+                    if(duplicateCount > 0 && newTimeslots.size() > 0){
+                        responseMessage = "Successfully save some timeslots. Duplicated or overlapping timeslots are not saved";
+                        responseResult = true;
+                    }
+                    else if(duplicateCount > 0){ //only duplicate data
+                        responseMessage = "Failed to save timeslots because of duplicate or overlapping timeslots";
+                    }
+                    else{ // no duplicate data
+                        responseResult = true;
+                    }
+
+                    responseData.put("timeslots", newTimeslots);
+                }
+                else{
+                    responseMessage = "Not authorized";
+                }
+            }
+            else{
+                responseMessage = "Failed. Please add new timeslots";
+            }
+
+        }
+        catch (Exception e){
+            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
+            responseMessage = "Error. Contact administrator";
+        }
+
+        return GenericResponse.makeResponse(responseMessage, responseResult, responseData);
+    }
 }

@@ -47,6 +47,7 @@ public class CustomerService {
             responseData.put("phone", customer.getPhone());
             responseData.put("profilePic", customer.getProfilePic());
             responseData.put("profile", customer.getProfile());
+            responseData.put("role", customer.getRole());
 
             responseResult = true;
             responseMessage = "success";
