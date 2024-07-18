@@ -108,6 +108,7 @@ public class BookingService {
                 detailData.put("price", booking.getPrice());
                 detailData.put("booking_date", booking.getBooking_date());
                 detailData.put("is_booking_confirmed", booking.getBooking_confirmed());
+                detailData.put("booking_completed", booking.isBooking_completed());
 
                 responseResult = true;
                 responseData.put("booking", detailData);
@@ -159,11 +160,12 @@ public class BookingService {
                         double price = dog.getRental_price_per_hour() * hours;
 
                         // create booking
-                        Booking booking = new Booking(null, dog.get_id(), renterId, dog.getOwner_id(), timeslot.get_id(), price, today, null);
+                        Booking booking = new Booking(null, dog.get_id(), renterId, dog.getOwner_id(), timeslot.get_id(), price, today, null, false);
                         booking = bookingRepository.save(booking);
 
                         responseData.put("booking_id", booking.get_id());
                         responseData.put("booking_confirmed", booking.getBooking_confirmed());
+                        responseData.put("booking_completed", booking.isBooking_completed());
                         responseData.put("dog", dog.dogResponse());
                         responseData.put("timeslot", timeslot.timeslotResponse());
                         responseData.put("booking_date", booking.getBooking_date());

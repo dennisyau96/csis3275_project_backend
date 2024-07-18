@@ -9,6 +9,16 @@ public class BookingListDTO {
     private boolean booking_confirmed;
     private Dog dog;
     private Timeslot timeslot;
+    private Double price;
+    private boolean booking_completed;
+
+    public boolean isBooking_completed() {
+        return booking_completed;
+    }
+
+    public void setBooking_completed(boolean booking_completed) {
+        this.booking_completed = booking_completed;
+    }
 
     public Double getPrice() {
         return price;
@@ -17,8 +27,6 @@ public class BookingListDTO {
     public void setPrice(Double price) {
         this.price = price;
     }
-
-    private Double price;
 
     public String get_id() {
         return _id;

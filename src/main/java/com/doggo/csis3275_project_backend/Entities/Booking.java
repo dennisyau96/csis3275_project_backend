@@ -26,4 +26,5 @@ public class Booking {
     private Double price;
     private LocalDate booking_date;
     private Boolean booking_confirmed;
+    private boolean booking_completed;
 }
