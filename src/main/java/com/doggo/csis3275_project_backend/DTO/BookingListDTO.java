@@ -10,6 +10,16 @@ public class BookingListDTO {
     private Dog dog;
     private Timeslot timeslot;
 
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    private Double price;
+
     public String get_id() {
         return _id;
     }

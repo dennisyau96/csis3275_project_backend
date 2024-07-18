@@ -23,6 +23,7 @@ public class Booking {
     @Field(targetType = FieldType.OBJECT_ID)
     private String timeslot_id;
     @Field(targetType = FieldType.OBJECT_ID)
+    private Double price;
     private LocalDate booking_date;
-    private boolean booking_confirmed;
+    private Boolean booking_confirmed;
 }

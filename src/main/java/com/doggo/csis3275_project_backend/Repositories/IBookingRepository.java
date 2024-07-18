@@ -30,7 +30,17 @@ public interface IBookingRepository extends MongoRepository<Booking, String> {
             "{ '$unwind': { 'path': '$dog', 'preserveNullAndEmptyArrays': true } }",
             "{$lookup: {from: 'timeslots', localField: 'timeslot_id', foreignField: '_id', as: 'timeslot'}}",
             "{ '$unwind': { 'path': '$timeslot', 'preserveNullAndEmptyArrays': true } }",
-            "{ '$project': { 'booking_date': 1, 'booking_confirmed': 1, 'dog': 1, 'timeslot': 1 } }"
+            "{ '$project': { 'booking_date': 1, 'booking_confirmed': 1, 'price': 1, 'dog': 1, 'timeslot': 1 } }"
     })
     List<BookingListDTO> findBookingDetailsByRenter_id(String renter_id);
+
+    @Aggregation(pipeline = {
+            "{$match: {owner_id:  ?0}}",
+            "{$lookup: {from: 'dogs', localField: 'dog_id', foreignField: '_id', as: 'dog'}}",
+            "{ '$unwind': { 'path': '$dog', 'preserveNullAndEmptyArrays': true } }",
+            "{$lookup: {from: 'timeslots', localField: 'timeslot_id', foreignField: '_id', as: 'timeslot'}}",
+            "{ '$unwind': { 'path': '$timeslot', 'preserveNullAndEmptyArrays': true } }",
+            "{ '$project': { 'booking_date': 1, 'booking_confirmed': 1, 'price': 1, 'dog': 1, 'timeslot': 1 } }"
+    })
+    List<BookingListDTO> findBookingDetailsByOwner_id(String owner_id);
 }

@@ -3,7 +3,6 @@ package com.doggo.csis3275_project_backend.Services;
 import com.doggo.csis3275_project_backend.DTO.BookingListDTO;
 import com.doggo.csis3275_project_backend.Entities.*;
 import com.doggo.csis3275_project_backend.Repositories.IBookingRepository;
-import com.doggo.csis3275_project_backend.Repositories.ICustomerRepository;
 import com.doggo.csis3275_project_backend.Repositories.IDogRepository;
 import com.doggo.csis3275_project_backend.Repositories.ITimeslotRepository;
 import com.doggo.csis3275_project_backend.exceptions.ErrorHelper;
@@ -16,11 +15,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Book;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,16 +37,25 @@ public class BookingService {
         this.jwtService = jwtService;
     }
 
-    public GenericResponse<Page<Booking>> getBookings(String rawToken, int pageNo, int pageSize, HttpServletResponse response) throws JsonProcessingException, JSONException {
+    public GenericResponse<Page<Booking>> getAllBookings(String rawToken, int pageNo, int pageSize, HttpServletResponse response) throws JsonProcessingException, JSONException {
         String responseMessage = "";
         boolean responseResult = false;
         HashMap<String, Object> responseData = new HashMap<>();
 
         try {
             String token = jwtService.getToken(rawToken);
-            String userId = jwtService.extractClaim(token, Claims::getId);
+            Claims claims = jwtService.extractAllClaim(token);
+            List<BookingListDTO> bookings;
 
-            List<BookingListDTO> bookings = bookingRepository.findBookingDetailsByRenter_id(userId);
+            String userId = claims.getId();
+            String role = claims.get("role").toString();
+
+            if (role.equals("RENTER")){
+                bookings = bookingRepository.findBookingDetailsByRenter_id(userId);
+            }
+            else{
+                bookings = bookingRepository.findBookingDetailsByOwner_id(userId);
+            }
 
             Pageable pageable = PageRequest.of(pageNo, pageSize);
             int start = (int) pageable.getOffset();
@@ -76,9 +83,18 @@ public class BookingService {
 
         try{
             String token = jwtService.getToken(rawToken);
-            String userId = jwtService.extractClaim(token, Claims::getId);
+            Claims claims = jwtService.extractAllClaim(token);
+            Booking booking = null;
 
-            Booking booking = bookingRepository.findBy_idAndRenter_id(bookingID, userId);
+            String userId = claims.getId();
+            String role = claims.get("role").toString();
+
+            if (role.equals("RENTER")){
+                booking = bookingRepository.findBy_idAndRenter_id(bookingID, userId);
+            }
+            else{
+                booking = bookingRepository.findBy_idAndOwner_id(bookingID, userId);
+            }
 
             if(booking != null){
                 Dog dog = dogRepository.findById(booking.getDog_id()).orElse(null);
@@ -89,8 +105,9 @@ public class BookingService {
                 detailData.put("dog", dog.dogResponse());
                 detailData.put("owner_id", booking.getOwner_id());
                 detailData.put("timeslot", timeslot.timeslotResponse());
+                detailData.put("price", booking.getPrice());
                 detailData.put("booking_date", booking.getBooking_date());
-                detailData.put("is_booking_confirmed", booking.isBooking_confirmed());
+                detailData.put("is_booking_confirmed", booking.getBooking_confirmed());
 
                 responseResult = true;
                 responseData.put("booking", detailData);
@@ -137,11 +154,16 @@ public class BookingService {
                         timeslot.setBooked(true);
                         timeslotRepository.save(timeslot);
 
+                        // calculate price
+                        long hours = timeslot.getStart_time().until(timeslot.getEnd_time(), ChronoUnit.HOURS);
+                        double price = dog.getRental_price_per_hour() * hours;
+
                         // create booking
-                        Booking booking = new Booking(null, dog.get_id(), renterId, dog.getOwner_id(), timeslot.get_id(), today, false);
+                        Booking booking = new Booking(null, dog.get_id(), renterId, dog.getOwner_id(), timeslot.get_id(), price, today, null);
                         booking = bookingRepository.save(booking);
 
                         responseData.put("booking_id", booking.get_id());
+                        responseData.put("booking_confirmed", booking.getBooking_confirmed());
                         responseData.put("dog", dog.dogResponse());
                         responseData.put("timeslot", timeslot.timeslotResponse());
                         responseData.put("booking_date", booking.getBooking_date());
@@ -197,8 +219,8 @@ public class BookingService {
                 booking = bookingRepository.findBy_idAndOwner_id(bookingID, ownerId);
 
                 if(booking != null){
-                    // owner can only approve booking, if the booking hasn't been approved
-                    if(! booking.isBooking_confirmed()) {
+                    // owner can only approve booking, if no action has been taken on the booking (booking == null)
+                    if(booking.getBooking_confirmed() == null) {
                         if(action.equals("approve")){
                             booking.setBooking_confirmed(true);
                             bookingRepository.save(booking);
@@ -219,6 +241,10 @@ public class BookingService {
                             else{
                                 responseMessage = "Failed to release timeslot";
                             }
+
+                            // update booking record
+                            booking.setBooking_confirmed(false);
+                            bookingRepository.save(booking);
                         }
                         else{
                             responseMessage = "Please approve or reject booking";

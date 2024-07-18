@@ -24,7 +24,7 @@ public class BookingController {
 
     @GetMapping("/getBookings")
     public GenericResponse<Page<Booking>> getBookings(@RequestHeader(name="Authorization") String rawToken, @RequestParam(defaultValue = "0") int page_no, @RequestParam(defaultValue = "10") int page_size, HttpServletResponse response) throws JsonProcessingException {
-        return bookingService.getBookings(rawToken, page_no, page_size, response);
+        return bookingService.getAllBookings(rawToken, page_no, page_size, response);
     }
 
     @GetMapping(path = "/getBooking/{bookingId}")
