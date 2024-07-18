@@ -6,9 +6,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
-@Document
+@Document(collection = "bookings")
 public class Booking {
     @Field(targetType = FieldType.OBJECT_ID)
     private String _id;
@@ -17,13 +19,10 @@ public class Booking {
     @Field(targetType = FieldType.OBJECT_ID)
     private String renter_id;
     @Field(targetType = FieldType.OBJECT_ID)
+    private String owner_id;
+    @Field(targetType = FieldType.OBJECT_ID)
     private String timeslot_id;
     @Field(targetType = FieldType.OBJECT_ID)
-    private String transaction_id;
-    private String booking_date;
-    private String booking_status;
-    private Integer rating;
-    private String review_text;
-
-
+    private LocalDate booking_date;
+    private boolean booking_confirmed;
 }

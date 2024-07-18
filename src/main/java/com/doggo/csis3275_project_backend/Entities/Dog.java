@@ -7,6 +7,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Data
 @AllArgsConstructor
 @Document(collection = "dogs")
@@ -42,4 +45,25 @@ public class Dog {
         this.vaccinated = vaccinated;
         this.profile_description = profileDescription;
     }*/
+
+    public Map<String, Object> dogResponse(){
+        HashMap<String, Object> data = new HashMap<>();
+
+        data.put("dog_id", _id);
+        data.put("service_id", service_id);
+        data.put("name", name);
+        data.put("breed", breed);
+        data.put("age", age);
+        data.put("sex", sex);
+        data.put("additional_message", additional_message);
+        data.put("profile_pic", profile_pic);
+        data.put("rental_price_per_hour", rental_price_per_hour);
+        data.put("location", location);
+        data.put("desexed", desexed);
+        data.put("vaccinated", vaccinated);
+        data.put("average_rating", average_rating);
+        data.put("profile_description", profile_description);
+
+        return data;
+    }
 }
