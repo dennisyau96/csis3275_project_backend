@@ -33,6 +33,10 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
+    public Claims extractAllClaim(String token) {
+        return extractAllClaims(token);
+    }
+
     public String generateToken(UserDetails userDetails, String id) {
         return generateToken(new HashMap<>(), userDetails, id);
     }
