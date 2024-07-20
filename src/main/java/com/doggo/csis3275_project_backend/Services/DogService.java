@@ -251,7 +251,10 @@ public class DogService {
         try{
             dog = dogRepository.getDogBy_id(_id);
 
-            if (dog.get_id() != null && dog.getOwner_id().equals(owner_id)){
+            if(dog == null){
+                responseMessage = "Dog data not found";
+            }
+            else if (dog.get_id() != null && dog.getOwner_id().equals(owner_id)){
                 dogRepository.delete(dog);
                 responseMessage = "The dog profile is deleted";
                 responseResult = true;

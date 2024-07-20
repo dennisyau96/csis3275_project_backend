@@ -37,9 +37,6 @@ public class AuthenticationService {
         HashMap<String, Object> responseData = new HashMap<>();
 
         try{
-            System.out.println(Role.OWNER.toString());
-            System.out.println(Role.RENTER.toString());
-
             //validate required fields
             if(customer.getUsername() == null || customer.getPassword().equals("") || customer.getRole().equals("")){
 //                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
