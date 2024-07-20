@@ -19,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -38,7 +39,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization1");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
+            Exception exception =  new InvalidParameterException("JWT token not found or not valid");
+            handlerExceptionResolver.resolveException(request, response, null, exception);
+//            filterChain.doFilter(request, response);
             return;
         }
 

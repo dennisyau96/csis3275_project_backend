@@ -12,6 +12,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.security.InvalidParameterException;
 import java.util.HashMap;
 
 @RestControllerAdvice
@@ -30,6 +31,12 @@ public class GlobalExceptionHandler {
 //            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(500), exception.getMessage());
 //            errorDetail.setProperty("description", "Unknown internal server error.");
             responseMessage = "An error occured while processing your request. Please try again.";
+        }
+
+        if (exception instanceof InvalidParameterException && exception.getMessage().equals("JWT token not found or not valid")) {
+//            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(401), exception.getMessage());
+//            errorDetail.setProperty("description", "The username or password is incorrect");
+            responseMessage = "Please login before using this feature";
         }
 
         if (exception instanceof BadCredentialsException) {
