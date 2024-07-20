@@ -19,12 +19,12 @@ public class MessageController {
     }
 
     @PostMapping(path="/sendMessage")
-    public GenericResponse sendMessage(@RequestHeader (name="Authorization") String rawToken, @RequestBody Message message, HttpServletResponse response) throws JsonProcessingException {
+    public GenericResponse sendMessage(@RequestHeader (name="Authorization1") String rawToken, @RequestBody Message message, HttpServletResponse response) throws JsonProcessingException {
         return messageService.sendMessage(rawToken,message,response);
     }
 
     @GetMapping(path = "/getMessages")
-    public GenericResponse gatMessages(@RequestHeader (name="Authorization") String rawToken, HttpServletResponse response,@RequestParam(defaultValue = "0") int page_no, @RequestParam(defaultValue = "10")int page_size) throws JsonProcessingException{
+    public GenericResponse gatMessages(@RequestHeader (name="Authorization1") String rawToken, HttpServletResponse response,@RequestParam(defaultValue = "0") int page_no, @RequestParam(defaultValue = "10")int page_size) throws JsonProcessingException{
         return messageService.getMessages(rawToken, response, page_no, page_size);
     }
 }

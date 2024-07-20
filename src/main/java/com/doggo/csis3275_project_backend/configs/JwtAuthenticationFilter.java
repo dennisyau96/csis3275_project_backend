@@ -1,6 +1,9 @@
 package com.doggo.csis3275_project_backend.configs;
 
 import com.doggo.csis3275_project_backend.Services.JwtService;
+import com.doggo.csis3275_project_backend.exceptions.ErrorHelper;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -61,7 +64,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             filterChain.doFilter(request, response);
-        } catch (Exception exception) {
+        }
+//        catch (ExpiredJwtException e){
+//            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
+//            handlerExceptionResolver.resolveException(request, response, null, e);
+//        }
+        catch (Exception exception) {
+            ErrorHelper.handleError(exception, "ERROR - " + getClass().getSimpleName());
             handlerExceptionResolver.resolveException(request, response, null, exception);
         }
     }
