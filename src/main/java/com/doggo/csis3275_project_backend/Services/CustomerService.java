@@ -40,6 +40,7 @@ public class CustomerService {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             customer = (Customer) authentication.getPrincipal();
 
+            responseData.put("id", customer.getId());
             responseData.put("username", customer.getUsername());
             responseData.put("firstName", customer.getFirstName());
             responseData.put("lastName", customer.getLastName());
