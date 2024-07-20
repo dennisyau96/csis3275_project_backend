@@ -143,7 +143,7 @@ public class DogService {
                 responseResult = true;
             }
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
             responseMessage = "An error occurred while processing your request.";
         }
 
@@ -212,7 +212,7 @@ public class DogService {
             }
         }
         catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
             responseMessage = "An error occurred while processing your request.";
 
         }
@@ -270,7 +270,7 @@ public class DogService {
 
         }
         catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
             responseMessage = "An error occurred while processing your request.";
 
         }

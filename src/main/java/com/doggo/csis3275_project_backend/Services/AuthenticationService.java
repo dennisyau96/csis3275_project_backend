@@ -78,7 +78,7 @@ public class AuthenticationService {
         }
         catch (Exception e){
             ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
-            responseMessage = "Error. Contact administrator";
+            responseMessage = "An error occured while processing your request. Please try again.";
         }
 
 //
@@ -153,6 +153,7 @@ public class AuthenticationService {
         }
         catch (AuthenticationException e){
             // same error message as above
+            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
             responseMessage = "Incorrect username or password";
         }
         catch(Exception e){

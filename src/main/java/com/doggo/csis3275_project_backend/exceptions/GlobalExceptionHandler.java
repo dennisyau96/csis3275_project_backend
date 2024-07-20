@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
         if (exception instanceof Exception) {
 //            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(500), exception.getMessage());
 //            errorDetail.setProperty("description", "Unknown internal server error.");
-            responseMessage = "An error occured while processing your request.";
+            responseMessage = "An error occured while processing your request. Please try again.";
         }
 
         if (exception instanceof BadCredentialsException) {
