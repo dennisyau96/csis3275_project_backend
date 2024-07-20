@@ -1,5 +1,6 @@
 package com.doggo.csis3275_project_backend.Services;
 
+import com.doggo.csis3275_project_backend.DTO.BookingListDTO;
 import com.doggo.csis3275_project_backend.Entities.Dog;
 import com.doggo.csis3275_project_backend.Entities.GenericResponse;
 import com.doggo.csis3275_project_backend.Entities.Timeslot;
@@ -14,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -55,6 +57,53 @@ public class DogService {
         catch (Exception e){
             ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
             responseMessage = "Error. Contact administrator";
+        }
+
+        return GenericResponse.makeResponse(responseMessage, responseResult, responseData);
+    }
+
+    public GenericResponse getDogsByOwner(String rawToken, int pageNo, int pageSize) throws JsonProcessingException, JSONException {
+        String responseMessage = "";
+        boolean responseResult = false;
+        HashMap<String, Object> responseData = new HashMap<>();
+
+        try {
+            String token = jwtService.getToken(rawToken);
+            String owner_id = jwtService.extractClaim(token, Claims::getId);
+
+            Pageable pageable = PageRequest.of(pageNo, pageSize);
+            Page<Dog> dogs = dogRepository.findAllByOwner_id(owner_id, pageable);
+
+
+            responseData.put("dogs", dogs);
+            responseResult = true;
+            responseMessage = " success";
+
+//            List<BookingListDTO> bookings;
+//
+//            String userId = claims.getId();
+//            String role = claims.get("role").toString();
+//
+//            if (role.equals("RENTER")){
+//                bookings = bookingRepository.findBookingDetailsByRenter_id(userId);
+//            }
+//            else{
+//                bookings = bookingRepository.findBookingDetailsByOwner_id(userId);
+//            }
+//
+//            Pageable pageable = PageRequest.of(pageNo, pageSize);
+//            int start = (int) pageable.getOffset();
+//            int end = Math.min(start + pageable.getPageSize(), bookings.size());
+//
+//            List<BookingListDTO> pageContent = bookings.subList(start, end);
+//
+//            responseResult = true;
+//
+//            responseData.put("bookings", new PageImpl<>(pageContent, pageable, bookings.size()));
+        }
+        catch (Exception e) {
+            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
+            responseMessage = "An error occurred while processing your request.";
         }
 
         return GenericResponse.makeResponse(responseMessage, responseResult, responseData);

@@ -33,6 +33,11 @@ public class DogController {
         return dogService.getDogs(page_no, page_size);
     }
 
+    @GetMapping("/get-my-dogs")
+    public GenericResponse<Page<Dog>> getDogsByOwner(@RequestHeader (name="Authorization1") String rawToken, @RequestParam(defaultValue = "0") int page_no, @RequestParam(defaultValue = "10") int page_size) throws JsonProcessingException {
+        return dogService.getDogsByOwner(rawToken, page_no, page_size);
+    }
+
     @GetMapping(path = "/getDogDetail/{id}")
     public GenericResponse showDog(@PathVariable String id, HttpServletResponse response) throws JsonProcessingException{
         return dogService.getDog(id, response);
