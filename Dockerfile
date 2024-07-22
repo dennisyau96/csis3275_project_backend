@@ -10,6 +10,6 @@ RUN mvn -f /home/app/pom.xml clean package -DskipTests
 # Package stage
 #
 FROM openjdk:11-jre-slim
-COPY --from=build /home/app/target/doggo-1.jar /usr/local/lib/doggo.jar
+COPY --from=build /home/app/target/doggo_backend-1.jar /usr/local/lib/doggo_backend-1.jar
 EXPOSE 8082
-ENTRYPOINT ["java","-jar","/usr/local/lib/doggo.jar"]
+ENTRYPOINT ["java","-jar","/usr/local/lib/doggo_backend-1.jar"]
