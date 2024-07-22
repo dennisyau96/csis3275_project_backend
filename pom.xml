@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.doggo</groupId>
-    <artifactId>csis3275_project_backend</artifactId>
+    <artifactId>doggo_backend</artifactId>
     <version>1</version>
-    <name>doggo</name>
+    <name>doggo_backend</name>
     <description>csis3275_project_backend</description>
     <url/>
     <licenses>
