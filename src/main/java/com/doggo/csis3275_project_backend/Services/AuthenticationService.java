@@ -37,9 +37,6 @@ public class AuthenticationService {
         HashMap<String, Object> responseData = new HashMap<>();
 
         try{
-            System.out.println(Role.OWNER.toString());
-            System.out.println(Role.RENTER.toString());
-
             //validate required fields
             if(customer.getUsername() == null || customer.getPassword().equals("") || customer.getRole().equals("")){
 //                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -78,7 +75,7 @@ public class AuthenticationService {
         }
         catch (Exception e){
             ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
-            responseMessage = "Error. Contact administrator";
+            responseMessage = "An error occured while processing your request. Please try again.";
         }
 
 //
@@ -153,6 +150,7 @@ public class AuthenticationService {
         }
         catch (AuthenticationException e){
             // same error message as above
+            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
             responseMessage = "Incorrect username or password";
         }
         catch(Exception e){

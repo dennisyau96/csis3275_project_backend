@@ -70,6 +70,7 @@ public class BookingService {
             responseResult = true;
         }
         catch (Exception e) {
+            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
             responseMessage = "An error occurred while processing your request.";
         }
 
@@ -186,6 +187,7 @@ public class BookingService {
             }
         }
         catch (Exception e) {
+            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
             // release booking
             if(timeslot != null){
                 timeslot.setBooked(false);
@@ -265,6 +267,7 @@ public class BookingService {
             }
         }
         catch (Exception e) {
+            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
             // release booking
             if(booking != null){
                 booking.setBooking_confirmed(false);

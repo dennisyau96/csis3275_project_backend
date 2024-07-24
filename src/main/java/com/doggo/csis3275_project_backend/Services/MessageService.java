@@ -5,6 +5,7 @@ import com.doggo.csis3275_project_backend.Entities.GenericResponse;
 import com.doggo.csis3275_project_backend.Entities.Message;
 import com.doggo.csis3275_project_backend.Repositories.IDogRepository;
 import com.doggo.csis3275_project_backend.Repositories.IMessageRepository;
+import com.doggo.csis3275_project_backend.exceptions.ErrorHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletResponse;
@@ -63,7 +64,7 @@ public class MessageService {
             }
         }
         catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
             responseMessage = "error";
         }
         return GenericResponse.makeResponse(responseMessage, responseResult, responseData);
@@ -85,7 +86,7 @@ public class MessageService {
 
         }
         catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
             responseMessage = "error";
         }
 

@@ -24,7 +24,7 @@ public class CustomerController {
     }
 
     @GetMapping("/me")
-    public GenericResponse getAuthenticatedUserData(@RequestHeader (name="Authorization") String rawToken, HttpServletResponse response){
+    public GenericResponse getAuthenticatedUserData(@RequestHeader (name="Authorization1") String rawToken, HttpServletResponse response){
         return customerService.getUserData(rawToken, response);
     }
 

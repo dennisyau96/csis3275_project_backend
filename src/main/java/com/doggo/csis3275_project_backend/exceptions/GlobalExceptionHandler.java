@@ -12,6 +12,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.security.InvalidParameterException;
 import java.util.HashMap;
 
 @RestControllerAdvice
@@ -19,10 +20,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public GenericResponse<Problem> handleSecurityException(Exception exception){
         String responseMessage = "";
-        ProblemDetail errorDetail = null;
+//        ProblemDetail errorDetail = null;
 
         // TODO send this stack trace to an observability tool
-        exception.printStackTrace();
+//        exception.printStackTrace();
+
+        ErrorHelper.handleError(exception, "ERROR - " + getClass().getSimpleName());
+
+        if (exception instanceof Exception) {
+//            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(500), exception.getMessage());
+//            errorDetail.setProperty("description", "Unknown internal server error.");
+            responseMessage = "An error occured while processing your request. Please try again.";
+        }
+
+        if (exception instanceof InvalidParameterException && exception.getMessage().equals("JWT token not found or not valid")) {
+//            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(401), exception.getMessage());
+//            errorDetail.setProperty("description", "The username or password is incorrect");
+            responseMessage = "Please login before using this feature";
+        }
 
         if (exception instanceof BadCredentialsException) {
 //            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(401), exception.getMessage());
@@ -45,19 +60,13 @@ public class GlobalExceptionHandler {
         if (exception instanceof SignatureException) {
 //            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
 //            errorDetail.setProperty("description", "The JWT signature is invalid");
-            responseMessage = "The JWT signature is invalid";
+            responseMessage = "Your session is expired. Please login again. (Problem Detail: The JWT signature is invalid)";
         }
 
-        if (exception instanceof ExpiredJwtException) {
+        if (exception instanceof io.jsonwebtoken.ExpiredJwtException) {
 //            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), exception.getMessage());
 //            errorDetail.setProperty("description", "The JWT token has expired");
-            responseMessage = "The JWT token has expired";
-        }
-
-        if (errorDetail == null) {
-//            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(500), exception.getMessage());
-//            errorDetail.setProperty("description", "Unknown internal server error.");
-            responseMessage = "Internal server error";
+            responseMessage = "Your session is expired. Please login again. (Problem Detail: the JWT token has expired)";
         }
 
         return GenericResponse.makeResponse(responseMessage, false, null);
