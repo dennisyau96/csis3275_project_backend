@@ -40,10 +40,13 @@ public class ReviewService {
             double rating = requestJSON.getDouble("review_rating");
             String comment = requestJSON.getString("review_comment");
             Booking booking = bookingRepository.findById(booking_id).orElse(null);
-            assert booking != null;
+            //assert booking != null;
             if(booking.isBooking_completed()){
                 booking.setReview_rating(rating);
                 booking.setReview_comment(comment);
+
+
+                bookingRepository.save(booking);
 
                 responseData.put("booking_id", booking.get_id());
                 responseData.put("review_rating", booking.getReview_rating());
