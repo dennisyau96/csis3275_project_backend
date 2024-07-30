@@ -19,11 +19,11 @@ public class TransactionController {
     }
 
     @PostMapping(path = "/showBill")
-    public GenericResponse showBill(@RequestHeader (name="Authorization") String rawToken,@RequestBody Map<String, Object> json, HttpServletResponse response){
+    public GenericResponse showBill(@RequestHeader (name="Authorization1") String rawToken,@RequestBody Map<String, Object> json, HttpServletResponse response){
         return transactionService.showBill(rawToken, json,response);
     }
     @PostMapping(path = "/pay")
-    public GenericResponse pay(@RequestHeader (name="Authorization") String rawToken,@RequestBody Map<String, Object> json, HttpServletResponse response){
+    public GenericResponse pay(@RequestHeader (name="Authorization1") String rawToken,@RequestBody Map<String, Object> json, HttpServletResponse response){
         return transactionService.pay(rawToken,json);
     }
 }

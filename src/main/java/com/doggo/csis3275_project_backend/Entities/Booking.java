@@ -27,4 +27,6 @@ public class Booking {
     private LocalDate booking_date;
     private Boolean booking_confirmed;
     private boolean booking_completed;
+    private String review_comment;
+    private Double review_rating;
 }

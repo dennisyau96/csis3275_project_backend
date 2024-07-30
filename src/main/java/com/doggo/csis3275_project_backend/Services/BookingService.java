@@ -161,7 +161,7 @@ public class BookingService {
                         double price = dog.getRental_price_per_hour() * hours;
 
                         // create booking
-                        Booking booking = new Booking(null, dog.get_id(), renterId, dog.getOwner_id(), timeslot.get_id(), price, today, null, false);
+                        Booking booking = new Booking(null, dog.get_id(), renterId, dog.getOwner_id(), timeslot.get_id(), price, today, null, false,null,null);
                         booking = bookingRepository.save(booking);
 
                         responseData.put("booking_id", booking.get_id());
