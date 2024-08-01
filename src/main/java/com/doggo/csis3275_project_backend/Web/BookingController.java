@@ -23,22 +23,27 @@ public class BookingController {
     }
 
     @GetMapping("/getBookings")
-    public GenericResponse<Page<Booking>> getBookings(@RequestHeader(name="Authorization") String rawToken, @RequestParam(defaultValue = "0") int page_no, @RequestParam(defaultValue = "10") int page_size, HttpServletResponse response) throws JsonProcessingException {
+    public GenericResponse<Page<Booking>> getBookings(@RequestHeader(name="Authorization1") String rawToken, @RequestParam(defaultValue = "0") int page_no, @RequestParam(defaultValue = "10") int page_size, HttpServletResponse response) throws JsonProcessingException {
         return bookingService.getAllBookings(rawToken, page_no, page_size, response);
     }
 
     @GetMapping(path = "/getBooking/{bookingId}")
-    public GenericResponse getBookingDetail(@RequestHeader(name="Authorization") String rawToken, @PathVariable String bookingId, HttpServletResponse response) throws JsonProcessingException{
+    public GenericResponse getBookingDetail(@RequestHeader(name="Authorization1") String rawToken, @PathVariable String bookingId, HttpServletResponse response) throws JsonProcessingException{
         return bookingService.getBookingDetail(rawToken, bookingId, response);
     }
 
     @PostMapping("/book")
-    public GenericResponse book(@RequestHeader(name="Authorization") String rawToken, @RequestBody Map<String, Object> json, HttpServletResponse response) throws JsonProcessingException {
+    public GenericResponse book(@RequestHeader(name="Authorization1") String rawToken, @RequestBody Map<String, Object> json, HttpServletResponse response) throws JsonProcessingException {
         return bookingService.book(rawToken, json, response);
     }
 
     @PostMapping("/booking/action")
-    public GenericResponse updateBooking(@RequestHeader(name="Authorization") String rawToken, @RequestBody Map<String, Object> json, HttpServletResponse response) throws JsonProcessingException {
+    public GenericResponse updateBooking(@RequestHeader(name="Authorization1") String rawToken, @RequestBody Map<String, Object> json, HttpServletResponse response) throws JsonProcessingException {
         return bookingService.updateBooking(rawToken, json, response);
+    }
+
+    @PostMapping("/booking/complete")
+    public GenericResponse completeBooking(@RequestHeader(name="Authorization1") String rawToken, @RequestBody Map<String, Object> json, HttpServletResponse response) throws JsonProcessingException {
+        return bookingService.completeBooking(rawToken, json, response);
     }
 }
