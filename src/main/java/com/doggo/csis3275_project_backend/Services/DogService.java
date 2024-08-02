@@ -285,35 +285,49 @@ public class DogService {
         try{
             Dog dog_original = dogRepository.getDogBy_id(_id);
             if (dog_original != null && dog_original.getOwner_id().equals(owner_id)){
+                if (dog_update.getName() != null) dog_original.setName(dog_update.getName());
+                if (dog_update.getBreed() != null) dog_original.setBreed(dog_update.getBreed());
+                if (dog_update.getAge() != null) dog_original.setAge(dog_update.getAge());
+                if (dog_update.getSex() != null) dog_original.setSex(dog_update.getSex());
+                if (dog_update.getProfile_pic() != null) dog_original.setProfile_pic(dog_update.getProfile_pic());
+                if (dog_update.getRental_price_per_hour() != null) dog_original.setRental_price_per_hour(dog_update.getRental_price_per_hour());
+                if (dog_update.getLocation() != null) dog_original.setLocation(dog_update.getLocation());
+                if (dog_update.getDesexed() != null) dog_original.setDesexed(dog_update.getDesexed());
+                if (dog_update.getVaccinated() != null) dog_original.setVaccinated(dog_update.getVaccinated());
+                if (dog_update.getProfile_description() != null) dog_original.setProfile_description(dog_update.getProfile_description());
 
-                if (dog_update.getName() == null || dog_update.getBreed() == null || dog_update.getAge() == null || dog_update.getSex() == null ||
-                        dog_update.getProfile_pic() == null || dog_update.getRental_price_per_hour() == null || dog_update.getLocation() == null ||
-                        dog_update.getDesexed() == null || dog_update.getVaccinated() == null || dog_update.getProfile_description() == null) {
-                    //response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    responseMessage = "The submitted data is incomplete. Please complete required information";
-                }
-                else {
-                    dogRepository.save(dog_update);
+                dogRepository.save(dog_original);
+                responseMessage = "Updated the dog successfully";
+                responseResult = true;
 
-                    responseData.put("id", dog_update.get_id());
-                    responseData.put("owner_id", dog_update.getOwner_id());
-                    responseData.put("service_id", dog_update.getService_id());
-                    responseData.put("name", dog_update.getName());
-                    responseData.put("breed", dog_update.getBreed());
-                    responseData.put("age", dog_update.getAge());
-                    responseData.put("sex", dog_update.getSex());
-                    responseData.put("additional_message", dog_update.getAdditional_message());
-                    responseData.put("profile_pic", dog_update.getProfile_pic());
-                    responseData.put("rental_price_per_hour", dog_update.getRental_price_per_hour());
-                    responseData.put("location", dog_update.getLocation());
-                    responseData.put("desexed", dog_update.getDesexed());
-                    responseData.put("vaccinated", dog_update.getVaccinated());
-                    responseData.put("average_rating", dog_update.getAverage_rating());
-                    responseData.put("profile_description", dog_update.getProfile_description());
-
-                    responseMessage = "Updated the dog successfully";
-                    responseResult = true;
-                }
+//                if (dog_update.getName() == null || dog_update.getBreed() == null || dog_update.getAge() == null || dog_update.getSex() == null ||
+//                        dog_update.getProfile_pic() == null || dog_update.getRental_price_per_hour() == null || dog_update.getLocation() == null ||
+//                        dog_update.getDesexed() == null || dog_update.getVaccinated() == null || dog_update.getProfile_description() == null) {
+//                    //response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//                    responseMessage = "The submitted data is incomplete. Please complete required information";
+//                }
+//                else {
+//                    dogRepository.save(dog_update);
+//
+//                    responseData.put("id", dog_update.get_id());
+//                    responseData.put("owner_id", dog_update.getOwner_id());
+//                    responseData.put("service_id", dog_update.getService_id());
+//                    responseData.put("name", dog_update.getName());
+//                    responseData.put("breed", dog_update.getBreed());
+//                    responseData.put("age", dog_update.getAge());
+//                    responseData.put("sex", dog_update.getSex());
+//                    responseData.put("additional_message", dog_update.getAdditional_message());
+//                    responseData.put("profile_pic", dog_update.getProfile_pic());
+//                    responseData.put("rental_price_per_hour", dog_update.getRental_price_per_hour());
+//                    responseData.put("location", dog_update.getLocation());
+//                    responseData.put("desexed", dog_update.getDesexed());
+//                    responseData.put("vaccinated", dog_update.getVaccinated());
+//                    responseData.put("average_rating", dog_update.getAverage_rating());
+//                    responseData.put("profile_description", dog_update.getProfile_description());
+//
+//                    responseMessage = "Updated the dog successfully";
+//                    responseResult = true;
+//                }
 
             }
             else{
