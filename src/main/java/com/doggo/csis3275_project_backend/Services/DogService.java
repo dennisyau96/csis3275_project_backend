@@ -285,7 +285,6 @@ public class DogService {
         try{
             Dog dog_original = dogRepository.getDogBy_id(_id);
             if (dog_original != null && dog_original.getOwner_id().equals(owner_id)){
-
                 dog_update.setOwner_id(owner_id);
                 if(dog_update.getService_id() == null){
                     dog_update.setService_id(dog_original.getService_id());
@@ -376,7 +375,6 @@ public class DogService {
                     responseMessage = "Updated the dog successfully";
                     responseResult = true;
                 }*/
-
             }
             else{
                 responseMessage = "You are not authorized to update this dog";
