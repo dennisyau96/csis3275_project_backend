@@ -286,7 +286,69 @@ public class DogService {
             Dog dog_original = dogRepository.getDogBy_id(_id);
             if (dog_original != null && dog_original.getOwner_id().equals(owner_id)){
 
-                if (dog_update.getName() == null || dog_update.getBreed() == null || dog_update.getAge() == null || dog_update.getSex() == null ||
+                dog_update.setOwner_id(owner_id);
+                if(dog_update.getService_id() == null){
+                    dog_update.setService_id(dog_original.getService_id());
+                }
+                if(dog_update.getName() == null){
+                    dog_update.setName(dog_original.getName());
+                }
+                if(dog_update.getBreed() == null){
+                    dog_update.setBreed(dog_original.getBreed());
+                }
+                if(dog_update.getAge() == null){
+                    dog_update.setAge(dog_original.getAge());
+                }
+                if(dog_update.getSex() == null){
+                    dog_update.setSex(dog_original.getSex());
+                }
+                if(dog_update.getAdditional_message() == null){
+                    dog_update.setAdditional_message(dog_original.getAdditional_message());
+                }
+                if(dog_update.getProfile_pic() == null){
+                    dog_update.setProfile_pic(dog_original.getProfile_pic());
+                }
+                if(dog_update.getRental_price_per_hour() == null){
+                    dog_update.setRental_price_per_hour(null);
+                }
+                if(dog_update.getLocation() == null){
+                    dog_update.setLocation(dog_original.getLocation());
+                }
+                if(dog_update.getDesexed() == null){
+                    dog_update.setDesexed(dog_original.getDesexed());
+                }
+                if(dog_update.getVaccinated() == null){
+                    dog_update.setVaccinated(dog_original.getVaccinated());
+                }
+                if(dog_update.getAverage_rating() == null){
+                    dog_update.setAverage_rating(dog_original.getAverage_rating());
+                }
+                if(dog_update.getProfile_description() == null){
+                    dog_update.setProfile_description(dog_original.getProfile_description());
+                }
+                dogRepository.save(dog_update);
+                responseData.put("id", dog_update.get_id());
+                responseData.put("owner_id", dog_update.getOwner_id());
+                responseData.put("service_id", dog_update.getService_id());
+                responseData.put("name", dog_update.getName());
+                responseData.put("breed", dog_update.getBreed());
+                responseData.put("age", dog_update.getAge());
+                responseData.put("sex", dog_update.getSex());
+                responseData.put("additional_message", dog_update.getAdditional_message());
+                responseData.put("profile_pic", dog_update.getProfile_pic());
+                responseData.put("rental_price_per_hour", dog_update.getRental_price_per_hour());
+                responseData.put("location", dog_update.getLocation());
+                responseData.put("desexed", dog_update.getDesexed());
+                responseData.put("vaccinated", dog_update.getVaccinated());
+                responseData.put("average_rating", dog_update.getAverage_rating());
+                responseData.put("profile_description", dog_update.getProfile_description());
+
+                responseMessage = "Updated the dog successfully";
+                responseResult = true;
+
+
+
+                /*if (dog_update.getName() == null || dog_update.getBreed() == null || dog_update.getAge() == null || dog_update.getSex() == null ||
                         dog_update.getProfile_pic() == null || dog_update.getRental_price_per_hour() == null || dog_update.getLocation() == null ||
                         dog_update.getDesexed() == null || dog_update.getVaccinated() == null || dog_update.getProfile_description() == null) {
                     //response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -313,7 +375,7 @@ public class DogService {
 
                     responseMessage = "Updated the dog successfully";
                     responseResult = true;
-                }
+                }*/
 
             }
             else{

@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Book;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -161,7 +162,7 @@ public class BookingService {
                         double price = dog.getRental_price_per_hour() * hours;
 
                         // create booking
-                        Booking booking = new Booking(null, dog.get_id(), renterId, dog.getOwner_id(), timeslot.get_id(), price, today, null, false);
+                        Booking booking = new Booking(null, dog.get_id(), renterId, dog.getOwner_id(), timeslot.get_id(), price, today, null, false,null,null);
                         booking = bookingRepository.save(booking);
 
                         responseData.put("booking_id", booking.get_id());
@@ -196,6 +197,7 @@ public class BookingService {
 
 //            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             responseMessage = "An error occurred while processing your request.";
+            ErrorHelper.handleError(e, "ERROR - " + getClass().getSimpleName());
         }
 
         return GenericResponse.makeResponse(responseMessage, responseResult, responseData);
@@ -280,4 +282,55 @@ public class BookingService {
         return GenericResponse.makeResponse(responseMessage, responseResult, responseData);
     }
 
+    public GenericResponse completeBooking(String rawToken, Map<String, Object> json, HttpServletResponse response) throws JsonProcessingException, JSONException {
+        String responseMessage = "";
+        boolean responseResult = false;
+        HashMap<String, Object> responseData = new HashMap<>();
+        Booking booking = null;
+
+        try {
+            String token = jwtService.getToken(rawToken);
+            Claims claims = jwtService.extractAllClaim(token);
+
+            String renterId = claims.getId();
+            String role = claims.get("role").toString().toLowerCase();
+
+            //only renter can complete booking
+            if (role.equals("renter")) {
+                JSONObject requestJSON = new JSONObject(json);
+                String bookingID = requestJSON.getString("booking_id");
+
+                booking = bookingRepository.findBy_idAndRenter_id(bookingID, renterId);
+
+                if (booking != null) {
+                    // can only complete if the booking confirmed
+                    if(booking.getBooking_confirmed()){
+                        booking.setBooking_completed(true);
+                        bookingRepository.save(booking);
+
+                        responseResult = true;
+                        responseMessage = "success";
+                    }
+                    else{
+                        responseMessage = "Booking has to be confirmed by the dog owner before being completed";
+                    }
+                }
+                else {
+                    responseMessage = "Booking data not found";
+                }
+            } else {
+                responseMessage = "Not authorized";
+            }
+        } catch (Exception e) {
+            // revert action
+            if(booking != null){
+                booking.setBooking_completed(false);
+                bookingRepository.save(booking);
+            }
+
+            responseMessage = "An error occurred while processing your request.";
+        }
+
+        return GenericResponse.makeResponse(responseMessage, responseResult, responseData);
+    }
 }
